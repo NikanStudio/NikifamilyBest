@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+    <meta charset="UTF-8"><meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>NikiFamily | انجمن نیکی فمیلی</title>
+
+<meta name="description"
+      content="NikiFamily؛ انجمن دوستان و طرفداران نیکی سمیعی برای ساخت و مشاهده تاپیک‌های گفتگو.">
+
+<meta name="keywords"
+      content="NikiFamily, نیکی فمیلی, نیکی سمیعی, انجمن نیکی فمیلی, انجمن">
+
+<meta name="author"
+      content="NikiFamily">
+
+<meta name="robots"
+      content="index, follow">
+
+<meta name="theme-color"
+      content="#7c3aed">
+
+<!-- Canonical -->
+<link rel="canonical"
+      href="https://nikanstudio.github.io/NikifamilyBest/">
+
+<!-- Open Graph -->
+<meta property="og:type"
+      content="website">
+
+<meta property="og:title"
+      content="NikiFamily | انجمن نیکی فمیلی">
+
+<meta property="og:description"
+      content="انجمن NikiFamily برای ساخت و مشاهده تاپیک‌های گفتگو.">
+
+<meta property="og:url"
+      content="https://nikanstudio.github.io/NikifamilyBest/">
+
+<meta property="og:site_name"
+      content="NikiFamily">
+
+<meta property="og:locale"
+      content="fa_IR">
+
+<!-- Twitter -->
+<meta name="twitter:card"
+      content="summary">
+
+<meta name="twitter:title"
+      content="NikiFamily | انجمن نیکی فمیلی">
+
+<meta name="twitter:description"
+      content="انجمن NikiFamily برای ساخت و مشاهده تاپیک‌های گفتگو.">
+
+<!-- Favicon -->
+<link rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💜%3C/text%3E%3C/svg%3E">
+
+<link rel="stylesheet"
+      href="style.css">
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head><body><header class="header"><div class="container">
+
+    <div class="logo">
+        💜
+    </div>
+
+    <h1>
+        NikiFamily
+    </h1>
+
+    <p>
+        انجمن نیکی فمیلی
+    </p>
+
+</div>
+
+</header><main class="container"><section class="intro">
+
+    <h2>
+        به نیکی فمیلی خوش آمدید 💜
+    </h2>
+
+    <p>
+        اینجا می‌توانید تاپیک‌های جدید بسازید
+        و نوشته‌های دیگران را مشاهده کنید.
+    </p>
+
+</section>
+
+
+<section class="create-box">
+
+    <h2>
+        ساخت تاپیک جدید
+    </h2>
+
+    <input
+        id="topicTitle"
+        type="text"
+        maxlength="100"
+        placeholder="عنوان تاپیک"
+        autocomplete="off"
+    >
+
+    <textarea
+        id="topicDescription"
+        maxlength="2000"
+        placeholder="متن تاپیک را بنویسید..."
+    ></textarea>
+
+    <button id="createTopicBtn">
+        + ساخت تاپیک
+    </button>
+
+    <p id="message"></p>
+
+</section>
+
+
+<section class="topics-section">
+
+    <div class="section-title">
+
+        <h2>
+            تاپیک‌ها
+        </h2>
+
+        <button
+            id="refreshBtn"
+            class="refresh-btn">
+
+            🔄 بروزرسانی
+
+        </button>
+
+    </div>
+
+
+    <div id="topicsList">
+
+        <div class="loading">
+            در حال دریافت تاپیک‌ها...
+        </div>
+
+    </div>
+
+</section>
+
+</main><footer><p>
+    💜 NikiFamily
+</p>
+
+<p>
+    انجمن نیکی فمیلی
+</p>
+
+</footer><script src="script.js"></script></body></html>
