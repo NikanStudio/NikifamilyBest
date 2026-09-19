@@ -17,7 +17,9 @@ max-width: 800px;
 margin: auto;
 }
 
-/* Header */
+/* =========================================
+HEADER
+========================================= */
 
 .header {
 background: linear-gradient(135deg, #7c3aed, #9333ea);
@@ -37,13 +39,176 @@ font-size: 15px;
 opacity: 0.9;
 }
 
-/* Main */
+/* =========================================
+MAIN
+========================================= */
 
 main {
 padding: 25px 0 40px;
 }
 
-/* Create */
+/* =========================================
+ADVERTISEMENT BANNER
+========================================= */
+
+.ad-banner {
+position: relative;
+overflow: hidden;
+display: flex;
+align-items: center;
+gap: 18px;
+
+background:
+    linear-gradient(
+        135deg,
+        #581c87,
+        #7c3aed 50%,
+        #9333ea
+    );
+
+color: white;
+padding: 22px;
+margin-bottom: 25px;
+
+border-radius: 20px;
+
+box-shadow:
+    0 8px 25px rgba(124, 58, 237, 0.25);
+
+}
+
+.ad-banner::before {
+content: "";
+position: absolute;
+
+width: 150px;
+height: 150px;
+
+background: rgba(255, 255, 255, 0.08);
+
+border-radius: 50%;
+
+top: -70px;
+left: -40px;
+
+}
+
+.ad-banner::after {
+content: "";
+position: absolute;
+
+width: 110px;
+height: 110px;
+
+background: rgba(255, 255, 255, 0.07);
+
+border-radius: 50%;
+
+bottom: -60px;
+right: -30px;
+
+}
+
+.ad-icon {
+position: relative;
+z-index: 2;
+
+min-width: 75px;
+height: 75px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+background: rgba(255, 255, 255, 0.14);
+
+border: 1px solid rgba(255, 255, 255, 0.2);
+
+border-radius: 18px;
+
+font-size: 32px;
+
+}
+
+.ad-content {
+position: relative;
+z-index: 2;
+flex: 1;
+}
+
+.ad-badge {
+display: inline-block;
+
+background: rgba(255, 255, 255, 0.16);
+
+border: 1px solid rgba(255, 255, 255, 0.22);
+
+padding: 5px 10px;
+
+border-radius: 20px;
+
+font-size: 10px;
+
+letter-spacing: 1px;
+
+margin-bottom: 8px;
+
+}
+
+.ad-content h2 {
+font-size: 19px;
+margin-bottom: 8px;
+}
+
+.ad-content p {
+font-size: 12px;
+line-height: 1.9;
+opacity: 0.92;
+margin-bottom: 12px;
+}
+
+.ad-contact {
+font-size: 12px;
+line-height: 1.8;
+margin-bottom: 7px;
+}
+
+.bale-link {
+display: inline-block;
+
+background: white;
+
+color: #6d28d9;
+
+text-decoration: none;
+
+font-weight: bold;
+
+font-size: 14px;
+
+padding: 8px 14px;
+
+border-radius: 10px;
+
+transition: 0.2s;
+
+}
+
+.bale-link:hover {
+transform: translateY(-2px);
+
+box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.15);
+
+}
+
+.bale-link:active {
+transform: scale(0.97);
+}
+
+/* =========================================
+CREATE TOPIC
+========================================= */
 
 .create-box {
 background: white;
@@ -62,20 +227,32 @@ font-size: 20px;
 input,
 textarea {
 width: 100%;
+
 border: 1px solid #ddd;
+
 border-radius: 12px;
+
 padding: 13px;
+
 font-family: inherit;
+
 font-size: 14px;
+
 margin-bottom: 12px;
+
 outline: none;
+
 transition: 0.2s;
+
 }
 
 input:focus,
 textarea:focus {
 border-color: #7c3aed;
-box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+
+box-shadow:
+    0 0 0 3px rgba(124, 58, 237, 0.1);
+
 }
 
 textarea {
@@ -85,14 +262,23 @@ resize: vertical;
 
 #createTopicBtn {
 width: 100%;
+
 border: none;
+
 border-radius: 12px;
+
 padding: 13px;
+
 background: #7c3aed;
+
 color: white;
+
 font-family: inherit;
+
 font-size: 15px;
+
 cursor: pointer;
+
 }
 
 #createTopicBtn:active {
@@ -106,11 +292,16 @@ cursor: not-allowed;
 
 #message {
 text-align: center;
+
 margin-top: 12px;
+
 font-size: 14px;
+
 }
 
-/* Topics */
+/* =========================================
+TOPICS
+========================================= */
 
 .topics-section {
 margin-top: 10px;
@@ -118,10 +309,15 @@ margin-top: 10px;
 
 .section-title {
 display: flex;
+
 align-items: center;
+
 justify-content: space-between;
+
 gap: 10px;
+
 margin-bottom: 15px;
+
 }
 
 .section-title h2 {
@@ -131,58 +327,95 @@ color: #333;
 
 .refresh-btn {
 border: none;
+
 background: white;
+
 color: #6d28d9;
+
 padding: 9px 13px;
+
 border-radius: 10px;
+
 font-family: inherit;
+
 cursor: pointer;
-box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+
+box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.06);
+
 }
 
-/* Topic */
+/* =========================================
+TOPIC CARD
+========================================= */
 
 .topic-card {
 background: white;
+
 border-radius: 16px;
+
 padding: 18px;
+
 margin-bottom: 18px;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.06);
+
 }
 
 .topic-card h3 {
 color: #6d28d9;
+
 font-size: 18px;
+
 margin-bottom: 10px;
+
 }
 
 .topic-card > p {
 color: #555;
+
 font-size: 14px;
+
 line-height: 1.9;
+
 white-space: pre-wrap;
+
 word-break: break-word;
+
 }
 
 .topic-date {
 display: block;
+
 margin-top: 12px;
+
 color: #999;
+
 font-size: 11px;
+
 }
 
-/* Comments */
+/* =========================================
+COMMENTS
+========================================= */
 
 .comments-section {
 margin-top: 18px;
+
 padding-top: 15px;
+
 border-top: 1px solid #eee;
+
 }
 
 .comments-title {
 color: #6d28d9;
+
 font-size: 16px;
+
 margin-bottom: 12px;
+
 }
 
 .comment-list {
@@ -191,38 +424,59 @@ margin-bottom: 15px;
 
 .comment-item {
 background: #f8f7fb;
+
 border-radius: 12px;
+
 padding: 11px 13px;
+
 margin-bottom: 9px;
+
 }
 
 .comment-name {
 display: block;
+
 color: #6d28d9;
+
 font-size: 13px;
+
 font-weight: bold;
+
 margin-bottom: 5px;
+
 }
 
 .comment-content {
 color: #444;
+
 font-size: 13px;
+
 line-height: 1.8;
+
 white-space: pre-wrap;
+
 word-break: break-word;
+
 }
 
 .comment-date {
 display: block;
+
 color: #999;
+
 font-size: 10px;
+
 margin-top: 6px;
+
 }
 
 .no-comments {
 color: #999;
+
 font-size: 12px;
+
 margin-bottom: 12px;
+
 }
 
 .comment-form {
@@ -236,58 +490,115 @@ margin-bottom: 8px;
 
 .comment-form textarea {
 min-height: 80px;
+
 resize: vertical;
+
 }
 
 .comment-btn {
 width: 100%;
+
 border: none;
+
 border-radius: 10px;
+
 padding: 11px;
+
 background: #7c3aed;
+
 color: white;
+
 font-family: inherit;
+
 font-size: 13px;
+
 cursor: pointer;
+
 }
 
 .comment-btn:disabled {
 opacity: 0.6;
+
 cursor: not-allowed;
+
 }
 
 .comment-message {
 text-align: center;
+
 font-size: 12px;
+
 margin-top: 8px;
+
 }
 
-/* Loading / Empty / Error */
+/* =========================================
+LOADING / EMPTY / ERROR
+========================================= */
 
 .loading,
 .empty,
 .error {
 background: white;
+
 padding: 25px;
+
 border-radius: 15px;
+
 text-align: center;
+
 color: #777;
+
 }
 
 .error {
 color: #b91c1c;
 }
 
-/* Footer */
+/* =========================================
+FOOTER
+========================================= */
 
 footer {
 text-align: center;
+
 padding: 25px;
+
 color: #888;
+
 font-size: 13px;
+
 }
 
-/* Mobile */
+.footer-email {
+margin-top: 8px;
+}
+
+.footer-email a {
+color: #6d28d9;
+
+text-decoration: none;
+
+font-weight: bold;
+
+}
+
+.footer-email a:hover {
+text-decoration: underline;
+}
+
+.footer-studio {
+margin-top: 8px;
+
+font-size: 11px;
+
+color: #aaa;
+
+}
+
+/* =========================================
+MOBILE
+========================================= */
 
 @media (max-width: 500px) {
 
@@ -309,11 +620,58 @@ font-size: 13px;
 
 .refresh-btn {
     font-size: 12px;
+
     padding: 8px 10px;
 }
 
 .topic-card {
     padding: 15px;
+}
+
+/* Mobile Advertisement */
+
+.ad-banner {
+    padding: 17px;
+
+    gap: 12px;
+
+    align-items: flex-start;
+}
+
+.ad-icon {
+    min-width: 55px;
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 14px;
+
+    font-size: 24px;
+}
+
+.ad-content h2 {
+    font-size: 16px;
+}
+
+.ad-content p {
+    font-size: 11px;
+
+    line-height: 1.8;
+}
+
+.ad-contact {
+    font-size: 11px;
+}
+
+.bale-link {
+    font-size: 13px;
+
+    padding: 7px 11px;
+}
+
+.ad-badge {
+    font-size: 9px;
 }
 
 }
