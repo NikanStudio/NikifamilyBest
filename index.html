@@ -1,124 +1,290 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>NikiFamily | انجمن نیکی فمیلی</title>
 
-<meta name="theme-color" content="#7c3aed">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="style.css">
+  <title>NikiFamily | انجمن نیکی فمیلی</title>
+  <meta name="description" content="نیکی فمیلی؛ انجمنی برای گفتگو، ساخت تاپیک، تبادل نظر و ارسال کامنت.">
+  <meta name="keywords" content="NikiFamilyBest, Niki Family, نیکی فمیلی, انجمن, تاپیک, گفتگو, کامنت">
+  <meta name="author" content="NikiFamilyBest">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#7c3aed">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="canonical" href="https://nikanstudio.github.io/NikifamilyBest/">
 
-</head><body><header class="header">
-    <div class="container">
-        <h1>💜 NikiFamily</h1>
-        <p>انجمن نیکی فمیلی</p>
-    </div>
-</header><main class="container"><!-- تبلیغات و سفارش سایت -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NikiFamilyBest | انجمن نیکی فمیلی">
+  <meta property="og:description" content="ساخت تاپیک، گفتگو و ارسال کامنت در انجمن نیکی فمیلی.">
+  <meta property="og:url" content="https://nikanstudio.github.io/NikifamilyBest/">
+  <meta property="og:site_name" content="NikiFamilyBest">
+  <meta property="og:locale" content="fa_IR">
 
-<section class="ad-banner">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="NikiFamilyBest">
+  <meta name="twitter:description" content="انجمن گفتگو و تبادل نظر نیکی فمیلی">
 
-    <div class="ad-icon">
-        💻✨
-    </div>
+  <link rel="stylesheet" href="style.css">
 
-    <div class="ad-content">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js" defer></script>
+</head>
 
-        <span class="ad-badge">
-            NIKAN STUDIO
-        </span>
+<body>
 
-        <h2>
-            طراحی سایت اختصاصی برای شما 🚀
-        </h2>
+<header class="topbar">
+  <div class="container nav-container">
+    <a class="brand" href="#home">
+      <span class="brand-icon">N</span>
+      <span>NikiFamily</span>
+    </a>
+
+    <button class="menu-btn" id="menuBtn" aria-label="باز کردن منو">☰</button>
+
+    <nav id="nav">
+      <a href="#home">خانه</a>
+      <a href="#topics">تاپیک‌ها</a>
+      <a href="#create">ساخت تاپیک</a>
+      <a href="#advertise">تبلیغات</a>
+      <a href="#about">درباره ما</a>
+    </nav>
+
+    <button class="name-button" id="nameButton">
+      👤 <span id="headerName">انتخاب نام</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <span class="hero-tag">💜 خوش آمدید به خانواده نیکی</span>
+
+        <h1>
+          به دنیای
+          <span>NikiFamily</span>
+          خوش آمدی!
+        </h1>
 
         <p>
-            سایت حرفه‌ای، مدرن و مناسب موبایل
-            برای کسب‌وکار، فروشگاه، شخصی و پروژه‌های شما
+          اینجا می‌تونی موضوعات موردعلاقه‌ات رو مطرح کنی،
+          با دیگران گفتگو کنی و نظراتت رو به اشتراک بذاری.
         </p>
 
-        <div class="ad-contact">
-            📩 برای ثبت سفارش سایت به این آیدی در بله پیام دهید:
+        <div class="hero-actions">
+          <a href="#create" class="primary-btn">ساخت تاپیک جدید</a>
+          <a href="#topics" class="secondary-btn">مشاهده تاپیک‌ها</a>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <div class="hero-circle"><span>💜</span></div>
+        <div class="floating-card card-one">💬 گفتگو</div>
+        <div class="floating-card card-two">✨ دوستی</div>
+        <div class="floating-card card-three">📝 تاپیک</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="container stats-grid">
+      <div class="stat-card">
+        <span>📝</span>
+        <strong id="topicCount">۰</strong>
+        <small>تاپیک منتشرشده</small>
+      </div>
+
+      <div class="stat-card">
+        <span>💬</span>
+        <strong id="commentCount">۰</strong>
+        <small>کامنت ثبت‌شده</small>
+      </div>
+
+      <div class="stat-card">
+        <span>🌍</span>
+        <strong>۲۴/۷</strong>
+        <small>دسترسی به انجمن</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="create-section section" id="create">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-tag">✍️ شروع گفتگو</span>
+        <h2>تاپیک جدید بساز</h2>
+        <p>موضوع موردنظرت رو بنویس و با دیگران به اشتراک بذار.</p>
+      </div>
+
+      <div class="form-card">
+        <div class="name-preview">
+          <div class="avatar" id="authorAvatar">م</div>
+          <div>
+            <strong id="currentName">مهمان</strong>
+            <small>نویسنده تاپیک</small>
+          </div>
+          <button type="button" class="change-name" id="changeName">تغییر نام</button>
         </div>
 
-        <a
-            class="bale-link"
+        <form id="topicForm">
+          <label for="topicTitle">عنوان تاپیک</label>
+          <input id="topicTitle" type="text" maxlength="120"
+            placeholder="عنوان تاپیکت رو بنویس..." required>
+
+          <label for="topicBody">متن تاپیک</label>
+          <textarea id="topicBody" rows="5" maxlength="5000"
+            placeholder="اینجا بنویس..." required></textarea>
+
+          <div class="form-bottom">
+            <small>حداکثر ۵۰۰۰ کاراکتر</small>
+            <button type="submit" class="primary-btn" id="publishTopic">
+              انتشار تاپیک
+            </button>
+          </div>
+
+          <p class="form-message" id="topicMessage" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="topics-section section" id="topics">
+    <div class="container">
+      <div class="topics-heading">
+        <div class="section-heading align-right">
+          <span class="section-tag">📚 انجمن گفتگو</span>
+          <h2>آخرین تاپیک‌ها</h2>
+          <p>گفتگوهای منتشرشده توسط اعضای انجمن</p>
+        </div>
+
+        <button class="refresh-btn" id="refreshBtn">↻ تازه‌سازی</button>
+      </div>
+
+      <div id="topicList" class="topic-list">
+        <div class="loading-card">
+          <div class="loader"></div>
+          <p>در حال دریافت تاپیک‌ها...</p>
+        </div>
+      </div>
+
+      <div class="empty-message hidden" id="emptyTopics">
+        <span>📝</span>
+        <h3>هنوز تاپیکی منتشر نشده!</h3>
+        <p>اولین نفر باش و یک گفتگو شروع کن.</p>
+        <a href="#create" class="primary-btn">ساخت اولین تاپیک</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NIKAN STUDIO ADVERTISEMENT -->
+
+  <section class="advert-section section" id="advertise">
+    <div class="container">
+      <div class="advert-card">
+
+        <div class="advert-top">
+          <span class="advert-badge">پیشنهاد ویژه</span>
+          <span class="advert-sparkle">✦</span>
+        </div>
+
+        <div class="advert-content">
+          <div class="advert-logo">N</div>
+
+          <span class="advert-brand">NIKAN STUDIO</span>
+
+          <h2>ایده‌ات رو به یک وب‌سایت واقعی تبدیل کن! 🚀</h2>
+
+          <p>
+            طراحی و ساخت وب‌سایت اختصاصی با ظاهر زیبا،
+            امکانات کاربردی و طراحی مناسب موبایل.
+          </p>
+
+          <div class="advert-price">
+            <span>فقط</span>
+            <strong>۱,۰۰۰,۰۰۰</strong>
+            <span>تومان</span>
+          </div>
+
+          <div class="advert-features">
+            <span>✓ طراحی اختصاصی</span>
+            <span>✓ سازگار با موبایل</span>
+            <span>✓ تحویل پروژه</span>
+          </div>
+
+          <a
+            class="advert-button"
             href="https://ble.ir/NikanSShshs"
             target="_blank"
             rel="noopener noreferrer"
-        >
-            @NikanSShshs
-        </a>
+          >
+            ثبت سفارش در بله
+            <span>↗</span>
+          </a>
 
-    </div>
-
-</section>
-
-
-<!-- ساخت تاپیک -->
-
-<section class="create-box">
-
-    <h2>ساخت تاپیک جدید</h2>
-
-    <input
-        id="topicTitle"
-        type="text"
-        maxlength="100"
-        placeholder="عنوان تاپیک"
-        autocomplete="off"
-    >
-
-    <textarea
-        id="topicDescription"
-        maxlength="2000"
-        placeholder="متن تاپیک را بنویسید..."
-    ></textarea>
-
-    <button id="createTopicBtn">
-        + ساخت تاپیک
-    </button>
-
-    <p id="message"></p>
-
-</section>
-
-
-<!-- تاپیک‌ها -->
-
-<section class="topics-section">
-
-    <div class="section-title">
-
-        <h2>تاپیک‌ها</h2>
-
-        <button id="refreshBtn" class="refresh-btn">
-            🔄 بروزرسانی
-        </button>
-
-    </div>
-
-    <div id="topicsList">
-
-        <div class="loading">
-            در حال دریافت تاپیک‌ها...
+          <div class="advert-contact">
+            شناسه سفارش: <strong dir="ltr">@NikanSShshs</strong>
+          </div>
         </div>
 
+        <div class="advert-footer">
+          طراحی و توسعه وب‌سایت توسط NIKAN STUDIO
+        </div>
+
+      </div>
     </div>
+  </section>
 
-</section>
+  <section class="about-section section" id="about">
+    <div class="container">
+      <div class="about-card">
+        <div class="about-icon">💜</div>
+        <h2>درباره NikiFamilyBest</h2>
+        <p>
+          نیکی فمیلی فضایی برای گفتگو، اشتراک‌گذاری دیدگاه‌ها
+          و ارتباط دوستانه است. بدون نیاز به ثبت‌نام می‌توانی
+          تاپیک بسازی و در گفتگوهای دیگران شرکت کنی.
+        </p>
+        <span class="about-brand">NikiFamilyBest © 2026</span>
+      </div>
+    </div>
+  </section>
 
-</main><footer><p>💜 NikiFamily</p>
+</main>
 
-<p class="footer-email">
-    📧 ارتباط با ما:
-    <a href="mailto:nikanstudioteam@gmail.com">
-        nikanstudioteam@gmail.com
-    </a>
-</p>
+<footer>
+  <div class="container footer-content">
+    <div>
+      <strong>NikiFamilyBest</strong>
+      <p>انجمن گفتگو و تبادل نظر نیکی فمیلی</p>
+    </div>
+    <a href="#home">بازگشت به بالا ↑</a>
+  </div>
 
-<p class="footer-studio">
-    طراحی و توسعه توسط NIKAN STUDIO
-</p>
+  <div class="footer-bottom">
+    ساخته‌شده با 💜 برای خانواده نیکی فمیلی
+  </div>
+</footer>
 
-</footer><script src="script.js"></script></body>
+<div class="modal hidden" id="nameModal">
+  <div class="modal-card">
+    <button class="modal-close" id="closeNameModal" aria-label="بستن">×</button>
+    <div class="modal-icon">👤</div>
+    <h2>نام نمایشی شما</h2>
+    <p>نامی انتخاب کن تا کنار تاپیک‌ها و کامنت‌ها نمایش داده شود.</p>
+
+    <form id="nameForm">
+      <input type="text" id="displayNameInput" maxlength="40"
+        placeholder="نام دلخواه شما" required>
+      <button type="submit" class="primary-btn">ذخیره نام</button>
+      <p id="nameMessage" class="form-message"></p>
+    </form>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
+
+</body>
 </html>
