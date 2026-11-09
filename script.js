@@ -1,735 +1,451 @@
-/* =========================================
-NikiFamily
-Supabase Connection
-========================================= */
+"use strict";
 
-const SUPABASE_URL =
-"https://fdazgbcyeiiccbjmxsjo.supabase.co";
+/* NIKIFAMILY BEST CONFIG */
 
-const SUPABASE_KEY =
-"sb_publishable_rvZELhuZqlk9e6SFuuu9rQ_f_9a665h";
+const SUPABASE_URL = "https://rfgdhbyzolizwesthccl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_0KCWzdw8rVxd4soh3ZST5w_BK_xjLys";
 
-/* =========================================
-CONNECT
-========================================= */
-
-const { createClient } = supabase;
-
-const db = createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
-/* =========================================
-ELEMENTS
-========================================= */
+const STORAGE_NAME = "nikifamily_display_name";
 
-const topicTitle =
-document.getElementById("topicTitle");
+let displayName = localStorage.getItem(STORAGE_NAME) || "";
+let topics = [];
+let loadingTopics = false;
 
-const topicDescription =
-document.getElementById("topicDescription");
+/* HELPERS */
 
-const createTopicBtn =
-document.getElementById("createTopicBtn");
-
-const topicsList =
-document.getElementById("topicsList");
-
-const message =
-document.getElementById("message");
-
-const refreshBtn =
-document.getElementById("refreshBtn");
-
-/* =========================================
-LOAD COMMENTS
-========================================= */
-
-async function loadComments(topicId, commentList) {
-
-const { data, error } = await db
-    .from("comments")
-    .select("id, topic_id, name, content, created_at")
-    .eq("topic_id", topicId)
-    .order("created_at", {
-        ascending: true
-    });
-
-if (error) {
-
-    console.error(
-        "Comments load error:",
-        error
-    );
-
-    commentList.innerHTML = `
-        <div class="no-comments">
-            دریافت کامنت‌ها انجام نشد.
-        </div>
-    `;
-
-    return;
+function $(id) {
+  return document.getElementById(id);
 }
 
-if (!data || data.length === 0) {
-
-    commentList.innerHTML = `
-        <div class="no-comments">
-            هنوز کامنتی ثبت نشده است.
-        </div>
-    `;
-
-    return;
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
 }
 
-commentList.innerHTML = "";
+function showToast(text) {
+  const toast = $("toast");
+  if (!toast) return;
 
-data.forEach(comment => {
+  toast.textContent = text;
+  toast.classList.remove("hidden");
 
-    const item =
-        document.createElement("div");
+  clearTimeout(showToast.timer);
 
-    item.className =
-        "comment-item";
+  showToast.timer = setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 3000);
+}
 
+function setMessage(id, text, isError = false) {
+  const element = $(id);
+  if (!element) return;
 
-    const name =
-        document.createElement("span");
+  element.textContent = text;
+  element.style.color = isError ? "#dc2626" : "#16a34a";
+}
 
-    name.className =
-        "comment-name";
+function getInitial(name) {
+  return (name || "م").trim().charAt(0);
+}
 
-    name.textContent =
-        comment.name || "کاربر";
+function formatDate(value) {
+  if (!value) return "";
 
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
 
-    const content =
-        document.createElement("div");
+  return date.toLocaleString("fa-IR", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
 
-    content.className =
-        "comment-content";
+function requireName() {
+  if (displayName.trim()) return true;
 
-    content.textContent =
-        comment.content || "";
+  openNameModal();
+  showToast("ابتدا نام نمایشی خود را انتخاب کن.");
+  return false;
+}
 
+/* DISPLAY NAME */
 
-    const date =
-        document.createElement("span");
+function updateNameUI() {
+  const name = displayName || "مهمان";
 
-    date.className =
-        "comment-date";
+  if ($("headerName")) $("headerName").textContent = name;
+  if ($("currentName")) $("currentName").textContent = name;
+  if ($("authorAvatar")) $("authorAvatar").textContent = getInitial(name);
+}
 
+function openNameModal() {
+  $("nameModal")?.classList.remove("hidden");
 
-    if (comment.created_at) {
+  if ($("displayNameInput")) {
+    $("displayNameInput").value = displayName;
+    $("displayNameInput").focus();
+  }
+}
 
-        const dateObject =
-            new Date(comment.created_at);
+function closeNameModal() {
+  $("nameModal")?.classList.add("hidden");
+}
 
-        date.textContent =
-            dateObject.toLocaleString("fa-IR");
-    }
+$("nameButton")?.addEventListener("click", openNameModal);
+$("changeName")?.addEventListener("click", openNameModal);
+$("closeNameModal")?.addEventListener("click", closeNameModal);
 
-
-    item.appendChild(name);
-    item.appendChild(content);
-    item.appendChild(date);
-
-    commentList.appendChild(item);
-
+$("nameModal")?.addEventListener("click", event => {
+  if (event.target === $("nameModal")) closeNameModal();
 });
 
-}
+$("nameForm")?.addEventListener("submit", event => {
+  event.preventDefault();
 
-/* =========================================
-CREATE COMMENT
-========================================= */
+  const newName = $("displayNameInput")?.value.trim();
 
-async function createComment(
-topicId,
-nameInput,
-contentInput,
-commentBtn,
-commentMessage,
-commentList
-) {
+  if (!newName) {
+    return setMessage("nameMessage", "لطفاً نام خود را وارد کن.", true);
+  }
 
-const name =
-    nameInput.value.trim();
+  if (newName.length > 40) {
+    return setMessage("nameMessage", "نام نباید بیشتر از ۴۰ کاراکتر باشد.", true);
+  }
 
-const content =
-    contentInput.value.trim();
+  displayName = newName;
+  localStorage.setItem(STORAGE_NAME, displayName);
 
+  updateNameUI();
+  closeNameModal();
+  showToast("نام نمایشی ذخیره شد 💜");
+});
 
-/* Check name */
-
-if (!name) {
-
-    commentMessage.textContent =
-        "لطفاً نام خود را وارد کنید.";
-
-    commentMessage.style.color =
-        "#b91c1c";
-
-    nameInput.focus();
-
-    return;
-}
-
-
-/* Check content */
-
-if (!content) {
-
-    commentMessage.textContent =
-        "لطفاً متن کامنت را وارد کنید.";
-
-    commentMessage.style.color =
-        "#b91c1c";
-
-    contentInput.focus();
-
-    return;
-}
-
-
-commentBtn.disabled =
-    true;
-
-commentBtn.textContent =
-    "در حال ارسال...";
-
-commentMessage.textContent =
-    "";
-
-
-/* =====================================
-   INSERT COMMENT
-===================================== */
-
-const { data, error } = await db
-    .from("comments")
-    .insert({
-        topic_id: topicId,
-        name: name,
-        content: content
-    })
-    .select();
-
-
-/* =====================================
-   ERROR
-===================================== */
-
-if (error) {
-
-    console.error(
-        "Comment insert error:",
-        error
-    );
-
-    console.error(
-        "Error code:",
-        error.code
-    );
-
-    console.error(
-        "Error message:",
-        error.message
-    );
-
-    console.error(
-        "Error details:",
-        error.details
-    );
-
-    console.error(
-        "Error hint:",
-        error.hint
-    );
-
-
-    /* نمایش خطای واقعی */
-
-    commentMessage.textContent =
-        "خطا: " +
-        (error.message || "خطای نامشخص");
-
-
-    commentMessage.style.color =
-        "#b91c1c";
-
-}
-
-/* =====================================
-   SUCCESS
-===================================== */
-
-else {
-
-    console.log(
-        "Comment inserted:",
-        data
-    );
-
-    commentMessage.textContent =
-        "کامنت با موفقیت ثبت شد 💜";
-
-    commentMessage.style.color =
-        "#16a34a";
-
-
-    nameInput.value =
-        "";
-
-    contentInput.value =
-        "";
-
-
-    await loadComments(
-        topicId,
-        commentList
-    );
-
-}
-
-
-commentBtn.disabled =
-    false;
-
-commentBtn.textContent =
-    "💬 ارسال کامنت";
-
-}
-
-/* =========================================
-LOAD TOPICS
-========================================= */
+/* LOAD TOPICS */
 
 async function loadTopics() {
+  if (loadingTopics) return;
 
-topicsList.innerHTML = `
-    <div class="loading">
-        در حال دریافت تاپیک‌ها...
-    </div>
-`;
+  loadingTopics = true;
 
+  const list = $("topicList");
+  const empty = $("emptyTopics");
 
-const { data, error } = await db
-    .from("topics")
-    .select(
-        "id, title, description, created_at"
-    )
-    .order("created_at", {
-        ascending: false
-    });
-
-
-if (error) {
-
-    console.error(
-        "Load topics error:",
-        error
-    );
-
-    topicsList.innerHTML = `
-        <div class="error">
-            دریافت تاپیک‌ها انجام نشد.
-            <br>
-            دسترسی جدول را در Supabase بررسی کنید.
-        </div>
+  if (list) {
+    list.innerHTML = `
+      <div class="loading-card">
+        <div class="loader"></div>
+        <p>در حال دریافت تاپیک‌ها...</p>
+      </div>
     `;
+  }
 
-    return;
-}
+  try {
+    const { data, error } = await supabaseClient
+      .from("topics")
+      .select("id, title, body, author_name, created_at")
+      .order("created_at", { ascending: false });
 
+    if (error) throw error;
 
-if (!data || data.length === 0) {
+    topics = data || [];
 
-    topicsList.innerHTML = `
-        <div class="empty">
-            هنوز هیچ تاپیکی ساخته نشده است 💜
-        </div>
-    `;
-
-    return;
-}
-
-
-topicsList.innerHTML = "";
-
-
-data.forEach(topic => {
-
-    /* =================================
-       TOPIC CARD
-    ================================= */
-
-    const card =
-        document.createElement("article");
-
-    card.className =
-        "topic-card";
-
-
-    /* Title */
-
-    const title =
-        document.createElement("h3");
-
-    title.textContent =
-        topic.title ||
-        "بدون عنوان";
-
-
-    /* Description */
-
-    const description =
-        document.createElement("p");
-
-    description.textContent =
-        topic.description ||
-        "";
-
-
-    /* Date */
-
-    const date =
-        document.createElement("span");
-
-    date.className =
-        "topic-date";
-
-
-    if (topic.created_at) {
-
-        const dateObject =
-            new Date(topic.created_at);
-
-        date.textContent =
-            "زمان ایجاد: " +
-            dateObject.toLocaleString("fa-IR");
+    if ($("topicCount")) {
+      $("topicCount").textContent = topics.length.toLocaleString("fa-IR");
     }
 
+    if (!topics.length) {
+      if (list) list.innerHTML = "";
+      empty?.classList.remove("hidden");
+      await updateCommentCount();
+      return;
+    }
 
-    /* =================================
-       COMMENTS SECTION
-    ================================= */
+    empty?.classList.add("hidden");
+    await renderTopics();
 
-    const commentsSection =
-        document.createElement("div");
+  } catch (error) {
+    console.error("LOAD TOPICS ERROR:", error);
 
-    commentsSection.className =
-        "comments-section";
-
-
-    /* Comments title */
-
-    const commentsTitle =
-        document.createElement("h4");
-
-    commentsTitle.className =
-        "comments-title";
-
-    commentsTitle.textContent =
-        "💬 نظرات";
-
-
-    /* Comment list */
-
-    const commentList =
-        document.createElement("div");
-
-    commentList.className =
-        "comment-list";
-
-    commentList.innerHTML = `
-        <div class="loading">
-            در حال دریافت کامنت‌ها...
+    if (list) {
+      list.innerHTML = `
+        <div class="loading-card">
+          <p>دریافت تاپیک‌ها انجام نشد.</p>
+          <small>${escapeHTML(error.message)}</small>
         </div>
+      `;
+    }
+
+    showToast("خطا در دریافت تاپیک‌ها");
+  } finally {
+    loadingTopics = false;
+  }
+}
+
+/* RENDER TOPICS AND COMMENTS */
+
+async function renderTopics() {
+  const list = $("topicList");
+  if (!list) return;
+
+  if (!topics.length) {
+    list.innerHTML = "";
+    return;
+  }
+
+  const topicIds = topics.map(topic => topic.id);
+
+  const { data: comments, error } = await supabaseClient
+    .from("comments")
+    .select("id, topic_id, author_name, body, created_at")
+    .in("topic_id", topicIds)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  const commentsByTopic = new Map();
+
+  (comments || []).forEach(comment => {
+    const key = String(comment.topic_id);
+
+    if (!commentsByTopic.has(key)) {
+      commentsByTopic.set(key, []);
+    }
+
+    commentsByTopic.get(key).push(comment);
+  });
+
+  list.innerHTML = topics.map(topic => {
+    const topicComments = commentsByTopic.get(String(topic.id)) || [];
+
+    const commentsHTML = topicComments.length
+      ? topicComments.map(comment => `
+          <div class="comment-item">
+            <div class="comment-avatar">
+              ${escapeHTML(getInitial(comment.author_name))}
+            </div>
+            <div class="comment-content">
+              <strong>${escapeHTML(comment.author_name || "مهمان")}</strong>
+              <p>${escapeHTML(comment.body)}</p>
+              <small>${formatDate(comment.created_at)}</small>
+            </div>
+          </div>
+        `).join("")
+      : `<p class="no-comments">هنوز کامنتی ثبت نشده است.</p>`;
+
+    return `
+      <article class="topic-card" data-topic-id="${escapeHTML(topic.id)}">
+        <div class="topic-header">
+          <div class="topic-avatar">
+            ${escapeHTML(getInitial(topic.author_name))}
+          </div>
+          <div>
+            <div class="topic-author">
+              ${escapeHTML(topic.author_name || "مهمان")}
+            </div>
+            <span class="topic-date">${formatDate(topic.created_at)}</span>
+          </div>
+        </div>
+
+        <h3>${escapeHTML(topic.title)}</h3>
+        <div class="topic-body">${escapeHTML(topic.body)}</div>
+
+        <div class="topic-divider"></div>
+
+        <div class="comments-heading">
+          💬 نظرات (${topicComments.length.toLocaleString("fa-IR")})
+        </div>
+
+        <div class="comment-list">${commentsHTML}</div>
+
+        <form class="comment-form" data-topic-id="${escapeHTML(topic.id)}">
+          <input type="text" name="comment" maxlength="2000"
+            placeholder="نظرت رو بنویس..." required>
+          <button type="submit">ارسال کامنت</button>
+        </form>
+
+        <div class="comment-message" aria-live="polite"></div>
+      </article>
     `;
+  }).join("");
 
-
-    /* =================================
-       COMMENT FORM
-    ================================= */
-
-    const commentForm =
-        document.createElement("div");
-
-    commentForm.className =
-        "comment-form";
-
-
-    /* Name */
-
-    const nameInput =
-        document.createElement("input");
-
-    nameInput.type =
-        "text";
-
-    nameInput.maxLength =
-        50;
-
-    nameInput.placeholder =
-        "نام شما";
-
-    nameInput.autocomplete =
-        "off";
-
-
-    /* Content */
-
-    const contentInput =
-        document.createElement("textarea");
-
-    contentInput.maxLength =
-        1000;
-
-    contentInput.placeholder =
-        "کامنت خود را بنویسید...";
-
-
-    /* Button */
-
-    const commentBtn =
-        document.createElement("button");
-
-    commentBtn.type =
-        "button";
-
-    commentBtn.className =
-        "comment-btn";
-
-    commentBtn.textContent =
-        "💬 ارسال کامنت";
-
-
-    /* Message */
-
-    const commentMessage =
-        document.createElement("p");
-
-    commentMessage.className =
-        "comment-message";
-
-
-    /* =================================
-       BUTTON EVENT
-    ================================= */
-
-    commentBtn.addEventListener(
-        "click",
-        () => {
-
-            createComment(
-                topic.id,
-                nameInput,
-                contentInput,
-                commentBtn,
-                commentMessage,
-                commentList
-            );
-
-        }
-    );
-
-
-    /* =================================
-       BUILD COMMENT FORM
-    ================================= */
-
-    commentForm.appendChild(
-        nameInput
-    );
-
-    commentForm.appendChild(
-        contentInput
-    );
-
-    commentForm.appendChild(
-        commentBtn
-    );
-
-    commentForm.appendChild(
-        commentMessage
-    );
-
-
-    /* =================================
-       BUILD COMMENTS SECTION
-    ================================= */
-
-    commentsSection.appendChild(
-        commentsTitle
-    );
-
-    commentsSection.appendChild(
-        commentList
-    );
-
-    commentsSection.appendChild(
-        commentForm
-    );
-
-
-    /* =================================
-       BUILD TOPIC CARD
-    ================================= */
-
-    card.appendChild(
-        title
-    );
-
-    card.appendChild(
-        description
-    );
-
-    card.appendChild(
-        date
-    );
-
-    card.appendChild(
-        commentsSection
-    );
-
-
-    topicsList.appendChild(
-        card
-    );
-
-
-    /* Load comments */
-
-    loadComments(
-        topic.id,
-        commentList
-    );
-
-});
-
+  if ($("commentCount")) {
+    $("commentCount").textContent =
+      (comments || []).length.toLocaleString("fa-IR");
+  }
 }
 
-/* =========================================
-CREATE TOPIC
-========================================= */
+/* CREATE TOPIC */
 
-async function createTopic() {
+$("topicForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
 
-const title =
-    topicTitle.value.trim();
+  if (!requireName()) return;
 
-const description =
-    topicDescription.value.trim();
+  const title = $("topicTitle").value.trim();
+  const body = $("topicBody").value.trim();
+  const button = $("publishTopic");
 
+  if (!title || !body) {
+    return setMessage("topicMessage", "عنوان و متن تاپیک را وارد کن.", true);
+  }
 
-if (!title) {
+  if (title.length > 120 || body.length > 5000) {
+    return setMessage("topicMessage", "طول عنوان یا متن بیشتر از حد مجاز است.", true);
+  }
 
-    message.textContent =
-        "لطفاً عنوان تاپیک را وارد کنید.";
+  button.disabled = true;
+  button.textContent = "در حال انتشار...";
 
-    message.style.color =
-        "#b91c1c";
+  setMessage("topicMessage", "");
 
-    topicTitle.focus();
+  try {
+    const { error } = await supabaseClient
+      .from("topics")
+      .insert({
+        title,
+        body,
+        author_name: displayName
+      });
 
-    return;
-}
+    if (error) throw error;
 
+    $("topicForm").reset();
 
-if (!description) {
-
-    message.textContent =
-        "لطفاً متن تاپیک را وارد کنید.";
-
-    message.style.color =
-        "#b91c1c";
-
-    topicDescription.focus();
-
-    return;
-}
-
-
-createTopicBtn.disabled =
-    true;
-
-createTopicBtn.textContent =
-    "در حال ساخت...";
-
-message.textContent =
-    "";
-
-
-const { error } = await db
-    .from("topics")
-    .insert({
-        title: title,
-        description: description
-    });
-
-
-if (error) {
-
-    console.error(
-        "Topic insert error:",
-        error
-    );
-
-    message.textContent =
-        "ساخت تاپیک انجام نشد.";
-
-    message.style.color =
-        "#b91c1c";
-
-}
-
-else {
-
-    message.textContent =
-        "تاپیک با موفقیت ساخته شد 💜";
-
-    message.style.color =
-        "#16a34a";
-
-
-    topicTitle.value =
-        "";
-
-    topicDescription.value =
-        "";
-
+    setMessage("topicMessage", "تاپیک با موفقیت منتشر شد 💜");
+    showToast("تاپیک منتشر شد!");
 
     await loadTopics();
 
+    $("topics")?.scrollIntoView({ behavior: "smooth" });
+
+  } catch (error) {
+    console.error("CREATE TOPIC ERROR:", error);
+    setMessage("topicMessage", error.message || "انتشار تاپیک انجام نشد.", true);
+  } finally {
+    button.disabled = false;
+    button.textContent = "انتشار تاپیک";
+  }
+});
+
+/* CREATE COMMENT */
+
+$("topicList")?.addEventListener("submit", async event => {
+  const form = event.target.closest(".comment-form");
+  if (!form) return;
+
+  event.preventDefault();
+
+  if (!requireName()) return;
+
+  const topicId = form.dataset.topicId;
+  const input = form.querySelector('input[name="comment"]');
+  const button = form.querySelector("button");
+  const messageBox = form.nextElementSibling;
+
+  const body = input.value.trim();
+  if (!body) return;
+
+  if (body.length > 2000) {
+    messageBox.textContent = "کامنت بیش از حد طولانی است.";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "در حال ارسال...";
+  messageBox.textContent = "";
+
+  try {
+    const { error } = await supabaseClient
+      .from("comments")
+      .insert({
+        topic_id: topicId,
+        author_name: displayName,
+        body
+      });
+
+    if (error) throw error;
+
+    showToast("کامنت ثبت شد 💜");
+    await loadTopics();
+
+  } catch (error) {
+    console.error("CREATE COMMENT ERROR:", error);
+    messageBox.textContent = error.message || "ارسال کامنت انجام نشد.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "ارسال کامنت";
+  }
+});
+
+/* COMMENT COUNT */
+
+async function updateCommentCount() {
+  const { count, error } = await supabaseClient
+    .from("comments")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    console.error("COMMENT COUNT ERROR:", error);
+    return;
+  }
+
+  if ($("commentCount")) {
+    $("commentCount").textContent =
+      (count || 0).toLocaleString("fa-IR");
+  }
 }
 
+/* REFRESH */
 
-createTopicBtn.disabled =
-    false;
+$("refreshBtn")?.addEventListener("click", async () => {
+  const button = $("refreshBtn");
 
-createTopicBtn.textContent =
-    "+ ساخت تاپیک";
+  button.disabled = true;
+  button.textContent = "در حال دریافت...";
 
+  await loadTopics();
+
+  button.disabled = false;
+  button.textContent = "↻ تازه‌سازی";
+
+  showToast("اطلاعات به‌روز شد.");
+});
+
+/* MOBILE MENU */
+
+$("menuBtn")?.addEventListener("click", () => {
+  $("nav")?.classList.toggle("active");
+});
+
+$("nav")?.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    $("nav")?.classList.remove("active");
+  });
+});
+
+/* INITIALIZE */
+
+async function initializeApp() {
+  updateNameUI();
+  await loadTopics();
+
+  if (!displayName) {
+    setTimeout(openNameModal, 500);
+  }
 }
 
-/* =========================================
-BUTTONS
-========================================= */
-
-createTopicBtn.addEventListener(
-"click",
-createTopic
-);
-
-refreshBtn.addEventListener(
-"click",
-loadTopics
-);
-
-/* =========================================
-START
-========================================= */
-
-loadTopics();
+initializeApp();
+    
